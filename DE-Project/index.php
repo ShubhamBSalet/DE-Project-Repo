@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // if student logged in
 if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
     header("Location: ./Student/StudentCredential/HomePage.php");
@@ -16,7 +15,6 @@ if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true)
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
