@@ -2,19 +2,24 @@
 session_start();
 // if student logged in
 if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-    header("Location: ./Student/StudentCredential/HomePage.php");
+    // header("Location: ./Student/StudentCredential/HomePage.php");
+    // exit();
+    header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
     exit();
 }
 
 // if faculty logged in
 if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-    header("Location: ./Faculty/FacultyCredential/HomePage.php");
+    // header("Location: ./Faculty/FacultyCredential/HomePage.php");
+    // exit();
+    header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
     exit();
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,7 +54,11 @@ if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true)
 
                     <div class="card-body">
                         <h4 class="fw-semibold">Student Login</h4>
-                        <a href="./Student/StudentCredential/Login.php"
+                        <!-- <a href="./Student/StudentCredential/Login.php"
+                            class="btn btn-primary w-100 mt-3 rounded-pill">
+                            Login as Student
+                        </a> -->
+                        <a href="/DE-Project/Student/StudentCredential/Login.php"
                             class="btn btn-primary w-100 mt-3 rounded-pill">
                             Login as Student
                         </a>
@@ -70,7 +79,11 @@ if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true)
 
                     <div class="card-body">
                         <h4 class="fw-semibold">Faculty Login</h4>
-                        <a href="./Faculty/FacultyCredential/Login.php"
+                        <!-- <a href="./Faculty/FacultyCredential/Login.php"
+                            class="btn btn-success w-100 mt-3 rounded-pill">
+                            Login as Faculty
+                        </a> -->
+                        <a href="/DE-Project/Faculty/FacultyCredential/Login.php"
                             class="btn btn-success w-100 mt-3 rounded-pill">
                             Login as Faculty
                         </a>

@@ -3,13 +3,14 @@
 
     //****************if faculty not logged in****************
     if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-        header("Location: HomePage.php");
+        // header("Location: HomePage.php");
+        header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
         exit();
     }
     
     //****************if student logged in****************
     if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-        header("Location: ./Student/StudentCredential/HomePage.php");
+        header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
         exit();
     }
 
@@ -38,7 +39,8 @@ if (isset($_POST['verifyOTP'])) {
         // OTP session variable will be destroy
         unset($_SESSION['otp']);
 
-        header("Location: HomePage.php");
+        // header("Location: HomePage.php");
+        header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
         exit();
 
     } 

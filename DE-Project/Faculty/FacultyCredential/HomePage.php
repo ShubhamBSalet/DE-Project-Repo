@@ -9,7 +9,7 @@ if (!isset($_SESSION['facultyLoggedin']) || $_SESSION['facultyLoggedin'] != true
 
 //****************if student logged in****************
 if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-    header("Location: ./Student/StudentCredential/HomePage.php");
+    header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
     exit();
 }
 

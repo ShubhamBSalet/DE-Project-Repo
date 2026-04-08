@@ -3,13 +3,15 @@ session_start();
 
 //****************if student logged in****************
 if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-    header("Location: HomePage.php");
+    // header("Location: HomePage.php");
+    header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
     exit();
 }
 
 //****************if faculty logged in****************
 if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-    header("Location: ./Faculty/FacultyCredential/HomePage.php");
+    // header("Location: ./Faculty/FacultyCredential/HomePage.php");
+    header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
     exit();
 }
 
