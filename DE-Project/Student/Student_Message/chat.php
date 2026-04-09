@@ -3,6 +3,12 @@ session_start();
 include("../../_DBConnect.php");
 include("encryption.php");
 
+//****************if student not logged in****************
+if (!isset($_SESSION['studentLoggedin'])) {
+    header("Location: /DE-Project/_NotLoggedIn.php");
+    exit();
+}
+
 // STEP 1: Detect sender
 if (isset($_SESSION['enrollment'])) {
     $sender = $_SESSION['enrollment'];

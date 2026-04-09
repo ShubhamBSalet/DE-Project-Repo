@@ -8,6 +8,7 @@ if (!isset($_SESSION['facultyLoggedin']) || $_SESSION['facultyLoggedin'] != true
     exit();
 }
 
+
 /* ================= FILTER ================= */
 $filter = $_GET['filter'] ?? "";
 

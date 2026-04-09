@@ -3,6 +3,11 @@ session_start();
 include("../../_DBConnect.php");
 include("encryption.php");
 
+if (!isset($_SESSION['facultyLoggedin']) || $_SESSION['facultyLoggedin'] != true) {
+    header("Location: ../../_NotLoggedIn.php");
+    exit();
+}
+
 // STEP 1: Detect sender
 if (isset($_SESSION['email'])) {
     $sender = $_SESSION['email'];
