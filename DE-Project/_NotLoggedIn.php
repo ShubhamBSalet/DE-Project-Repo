@@ -1,5 +1,5 @@
 <?php
-session_start();
+    session_start();
 
     //****************if student logged in****************
     if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
@@ -13,7 +13,7 @@ session_start();
         exit();
     }
     
-    //****************if faculty logged in****************
+    //****************if admin logged in****************
     if (isset($_SESSION['AdminLoggedin']) && $_SESSION['AdminLoggedin'] == true) {
         header("Location: ./Admin-panel/Admin_Credential/HomePage.php");
         exit();

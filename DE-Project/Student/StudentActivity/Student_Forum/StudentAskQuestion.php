@@ -1,22 +1,24 @@
 <?php
-session_start();
-include("../../../_DBConnect.php");
+    session_start();
+    include("../../../_DBConnect.php");
 
-// ================= POST QUESTION =================
-if (isset($_POST['ask'])) {
+    // ================= POST QUESTION =================
+    if (isset($_POST['ask'])) {
 
-    $question = $_POST['question'];
-    $enrollment = $_SESSION['enrollment'];
+        // get question input from textarea
+        $question = $_POST['question'];
 
-    mysqli_query(
-        $conn,
-        "INSERT INTO questionask(user_enrollment,question)
-         VALUES ('$enrollment','$question')"
-    );
+        // get enrollment value from the session variable enrollment
+        $enrollment = $_SESSION['enrollment'];
 
-    header("Location: StudentForum.php");
-    exit();
-}
+        // query to insert question to the database table
+        $query = "INSERT INTO questionask(user_enrollment,question) VALUES ('$enrollment','$question')";
+        mysqli_query($conn, $query);
+
+        // redirect to StudentForum.php
+        header("Location: StudentForum.php");
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -42,42 +44,22 @@ if (isset($_POST['ask'])) {
 
                 <div class="card shadow-sm border-0 rounded-4">
 
-                    <!-- HEADER -->
                     <div class="card-header bg-primary text-white text-center rounded-top-4">
                         <h4 class="mb-0 fw-semibold">Ask a Question</h4>
                     </div>
 
-                    <!-- BODY -->
                     <div class="card-body p-4">
 
                         <form method="post">
 
-                            <!-- TEXTAREA -->
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">
-                                    Your Question
-                                </label>
-
-                                <textarea name="question"
-                                    class="form-control form-control-lg"
-                                    rows="5"
-                                    placeholder="Type your question here..."
-                                    required></textarea>
+                                <label class="form-label fw-semibold">Your Question</label>
+                                <textarea name="question" class="form-control form-control-lg" rows="5" placeholder="Type your question here..." required></textarea>
                             </div>
 
-                            <!-- BUTTONS -->
                             <div class="d-flex flex-wrap gap-2">
-
-                                <button name="ask"
-                                    class="btn btn-primary rounded-pill px-4">
-                                    Post Question
-                                </button>
-
-                                <a href="./StudentForum.php"
-                                    class="btn btn-outline-dark rounded-pill px-4">
-                                    Back
-                                </a>
-
+                                <button name="ask" class="btn btn-primary rounded-pill px-4">Post Question</button>
+                                <a href="./StudentForum.php" class="btn btn-outline-dark rounded-pill px-4">Back</a>
                             </div>
 
                         </form>

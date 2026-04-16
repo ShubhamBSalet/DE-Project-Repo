@@ -101,7 +101,7 @@ if (isset($_POST['login'])) {
 
                         <button type="submit"
                             name="login"
-                            class="btn btn-success btn-lg w-100 rounded-pill">
+                            class="btn btn-success w-100 rounded-pill">
                             Send OTP
                         </button>
 
