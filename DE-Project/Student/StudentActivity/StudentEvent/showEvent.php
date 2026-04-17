@@ -1,18 +1,18 @@
 <?php
-    session_start();
-    include("../../../_DBConnect.php");
+session_start();
+include("../../../_DBConnect.php");
 
-    //****************if student not logged in****************
-    if (!isset($_SESSION['studentLoggedin'])) {
-        header("Location: /DE-Project/_NotLoggedIn.php");
-        exit();
-    }
+//****************if student not logged in****************
+if (!isset($_SESSION['studentLoggedin'])) {
+    header("Location: /DE-Project/_NotLoggedIn.php");
+    exit();
+}
 
-    //****************if faculty logged in****************
-    if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-        header("Location: ./Faculty/FacultyCredential/HomePage.php");
-        exit();
-    }
+//****************if faculty logged in****************
+if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
+    header("Location: ./Faculty/FacultyCredential/HomePage.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +27,8 @@
 
 <body class="bg-light">
 
+    
+    <?php include("../../loader.php"); ?>
     <?php include("../../_Navbar.php"); ?>
 
     <div class="container py-5">
@@ -41,20 +43,20 @@
         <div class="row g-4">
 
             <?php
-                //************fetch latest event post from database table************
-                $sql = "SELECT * FROM eventpost ORDER BY event_datetime DESC";
-                $result = mysqli_query($conn, $sql);
+            //************fetch latest event post from database table************
+            $sql = "SELECT * FROM eventpost ORDER BY event_datetime DESC";
+            $result = mysqli_query($conn, $sql);
 
-                //************fetch one by one row(data) from database table in an array formate************
-                while ($row = mysqli_fetch_assoc($result)) {
+            //************fetch one by one row(data) from database table in an array formate************
+            while ($row = mysqli_fetch_assoc($result)) {
 
-                    //************Format date by converting it to string************
-                    $formattedDate = date("d M Y, h:i A", strtotime($row['event_datetime']));
+                //************Format date by converting it to string************
+                $formattedDate = date("d M Y, h:i A", strtotime($row['event_datetime']));
 
-                    //************Short description (limit to 100 chars)************
-                    $shortDetails = strlen($row['event_details']) > 100
-                        ? substr($row['event_details'], 0, 100) . "..."
-                        : $row['event_details'];
+                //************Short description (limit to 100 chars)************
+                $shortDetails = strlen($row['event_details']) > 100
+                    ? substr($row['event_details'], 0, 100) . "..."
+                    : $row['event_details'];
             ?>
 
                 <div class="col-12 col-md-6 col-lg-4">

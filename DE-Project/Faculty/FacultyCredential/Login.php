@@ -1,46 +1,22 @@
 <?php
 session_start();
 
-//****************if faculty logged in****************
+// If faculty logged in
 if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-    // header("Location: HomePage.php");
     header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
     exit();
 }
 
-//****************if student logged in****************
+// If student logged in
 if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
     header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
     exit();
 }
 
-include("../../_DBConnect.php");
-
 $error = "";
-
-// check form contains value
-if (isset($_POST['login'])) {
-
-    $email = $_POST['email'];
-
-    if (!empty($email)) {
-
-        $query = mysqli_query($conn, "SELECT * FROM facultydata WHERE email='$email'");
-
-        if (mysqli_num_rows($query) > 0) {
-
-            $otp = rand(100000, 999999);
-
-            $_SESSION['otp'] = $otp;
-            $_SESSION['email'] = $email;
-
-            header("Location: ./LoginOTP.php");
-            exit();
-
-        } else {
-            $error = "Email not found";
-        }
-    }
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
 }
 ?>
 
@@ -48,82 +24,59 @@ if (isset($_POST['login'])) {
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Login</title>
-
-    <!-- Latest Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
 
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <!-- Loader -->
+    <div id="loader" style="display:none; position:fixed; width:100%; height:100%; background:white; z-index:9999; justify-content:center; align-items:center;">
+        <div class="spinner-border text-success" style="width:3rem; height:3rem;"></div>
+    </div>
 
-    <!-- LARGE CARD -->
-    <div class="card shadow-lg border-0 rounded-4 w-100 col-lg-10 col-xl-9">
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
 
-        <div class="row g-0">
+        <div class="card shadow-lg border-0 rounded-4 w-100 col-lg-10 col-xl-9">
+            <div class="row g-0">
 
-            <!-- Image -->
-            <div class="col-md-6 d-none d-md-block">
-                <img src="../../Assets/Faculty/FacultyLogin.jpeg"
-                     class="img-fluid h-100 w-100 rounded-start-4">
-            </div>
+                <div class="col-md-6 d-none d-md-block">
+                    <img src="../../Assets/Faculty/FacultyLogin.jpeg" class="img-fluid h-100 w-100 rounded-start-4">
+                </div>
 
-            <!-- Form -->
-            <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="card-body p-5">
 
-                <div class="card-body p-5">
+                        <h2 class="text-center fw-bold mb-4">Faculty Login</h2>
 
-                    <h2 class="text-center fw-bold mb-4">
-                        Faculty Login
-                    </h2>
+                        <?php if ($error != "") echo "<div class='alert alert-danger'>$error</div>"; ?>
 
-                    <?php
-                    if ($error != "") {
-                        echo "<div class='alert alert-danger text-center'>$error</div>";
-                    }
-                    ?>
+                        <form method="post" action="./LoginProcess.php" onsubmit="showLoader()">
 
-                    <form method="post" action="./Login.php">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Faculty Email</label>
+                                <input type="email" name="email" class="form-control form-control-lg rounded-pill" required>
+                            </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                Faculty Email
-                            </label>
-                            <input type="email"
-                                name="email"
-                                class="form-control form-control-lg rounded-pill"
-                                placeholder="Enter your email"
-                                required>
-                        </div>
+                            <button name="login" class="btn btn-success w-100 rounded-pill">Send OTP</button>
 
-                        <button type="submit"
-                            name="login"
-                            class="btn btn-success w-100 rounded-pill">
-                            Send OTP
-                        </button>
+                            <a href="../../index.php" class="btn btn-outline-secondary w-100 mt-3 rounded-pill">Back</a>
 
-                        <a href="../../index.php"
-                           class="btn btn-outline-secondary w-100 mt-3 rounded-pill">
-                            Back to Login Options
-                        </a>
+                        </form>
 
-                    </form>
-
+                    </div>
                 </div>
 
             </div>
-
         </div>
 
     </div>
 
-</div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
+        }
+    </script>
 
 </body>
 

@@ -67,156 +67,192 @@ $q = mysqli_query($conn, $query);
 
 <body class="bg-light">
 
-<?php include("../../_Navbar.php"); ?>
+    <?php include("../../loader.php"); ?> <!-- ADD THIS -->
+    <?php include("../../_Navbar.php"); ?>
 
-<div class="container py-5">
+    <div class="container py-5">
 
-    <!-- HEADER -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <!-- HEADER -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
-        <h3 class="fw-bold mb-0">Faculty Forum</h3>
+            <h3 class="fw-bold mb-0">Faculty Forum</h3>
 
-        <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex flex-wrap gap-2">
 
-            
 
-            <!-- 🔍 SEARCH (NO RELOAD) -->
-            <input type="text"
-                id="searchInput"
-                class="form-control rounded-pill"
-                placeholder="Search question..."
-                oninput="searchQuestion()">
 
-            <!-- 🎯 FILTER -->
-            <form method="get">
-                <select name="filter"
-                    class="form-select rounded-pill"
-                    onchange="this.form.submit()">
+                <!-- 🔍 SEARCH (NO RELOAD) -->
+                <input type="text"
+                    id="searchInput"
+                    class="form-control rounded-pill"
+                    placeholder="Search question..."
+                    oninput="searchQuestion()">
 
-                    <option value="">Filter</option>
+                <!-- 🎯 FILTER -->
+                <form method="get">
+                    <select name="filter"
+                        class="form-select rounded-pill"
+                        onchange="this.form.submit()">
 
-                    <option value="popular_high" <?php if ($filter == "popular_high") echo "selected"; ?>>
-                        Highest Popular
-                    </option>
+                        <option value="">Filter</option>
 
-                    <option value="popular_low" <?php if ($filter == "popular_low") echo "selected"; ?>>
-                        Lowest Popular
-                    </option>
+                        <option value="popular_high" <?php if ($filter == "popular_high") echo "selected"; ?>>
+                            Highest Popular
+                        </option>
 
-                    <option value="new" <?php if ($filter == "new") echo "selected"; ?>>
-                        Newest
-                    </option>
+                        <option value="popular_low" <?php if ($filter == "popular_low") echo "selected"; ?>>
+                            Lowest Popular
+                        </option>
 
-                    <option value="old" <?php if ($filter == "old") echo "selected"; ?>>
-                        Oldest
-                    </option>
+                        <option value="new" <?php if ($filter == "new") echo "selected"; ?>>
+                            Newest
+                        </option>
 
-                    <option value="own" <?php if ($filter == "own") echo "selected"; ?>>
-                        My Questions
-                    </option>
+                        <option value="old" <?php if ($filter == "old") echo "selected"; ?>>
+                            Oldest
+                        </option>
 
-                </select>
-            </form>
+                        <option value="own" <?php if ($filter == "own") echo "selected"; ?>>
+                            My Questions
+                        </option>
 
-            <!-- Ask -->
-            <a href="FacultyAskQuestion.php"
-                class="btn btn-success rounded-pill px-4">
-                Ask Question
-            </a>
+                    </select>
+                </form>
+
+                <!-- Ask -->
+                <a href="FacultyAskQuestion.php"
+                    onclick="handleNavigation(event, this.href)"
+                    class="btn btn-success rounded-pill px-4">
+                    Ask Question
+                </a>
+
+            </div>
 
         </div>
 
-    </div>
+        <!-- QUESTIONS -->
+        <div id="questionContainer">
 
-    <!-- QUESTIONS -->
-    <div id="questionContainer">
+            <?php while ($row = mysqli_fetch_assoc($q)) { ?>
 
-        <?php while ($row = mysqli_fetch_assoc($q)) { ?>
+                <?php
+                $isStudent = !empty($row['student_name']);
+                $name = $isStudent ? $row['student_name'] : $row['faculty_name'];
+                $role = $isStudent ? "Student" : "Faculty";
+                $border = $isStudent ? "border-primary" : "border-success";
+                ?>
 
-            <?php
-            $isStudent = !empty($row['student_name']);
-            $name = $isStudent ? $row['student_name'] : $row['faculty_name'];
-            $role = $isStudent ? "Student" : "Faculty";
-            $border = $isStudent ? "border-primary" : "border-success";
-            ?>
+                <!-- ✅ IMPORTANT CLASS -->
+                <div class="card shadow-sm border-3 rounded-4 mb-4 <?php echo $border; ?> question-card">
 
-            <!-- ✅ IMPORTANT CLASS -->
-            <div class="card shadow-sm border-3 rounded-4 mb-4 <?php echo $border; ?> question-card">
+                    <div class="card-body">
 
-                <div class="card-body">
+                        <!-- TOP -->
+                        <div class="d-flex justify-content-between align-items-center mb-2">
 
-                    <!-- TOP -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <a href="Profile.php?id=<?php echo urlencode($row['user_enrollment']); ?>"
+                                    onclick="handleNavigation(event, this.href)"
+                                    class="fw-semibold text-decoration-none">
+                                    <?php echo $name; ?>
+                                </a>
 
-                        <div>
-                            <a href="Profile.php?id=<?php echo urlencode($row['user_enrollment']); ?>"
-                                class="fw-semibold text-decoration-none">
-                                <?php echo $name; ?>
-                            </a>
+                                <span class="badge bg-secondary ms-2">
+                                    <?php echo $role; ?>
+                                </span>
+                            </div>
 
-                            <span class="badge bg-secondary ms-2">
-                                <?php echo $role; ?>
+                            <span class="badge bg-light text-dark">
+                                Response - <?php echo $row['answer_count']; ?>
                             </span>
+
                         </div>
 
-                        <span class="badge bg-light text-dark">
-                            Response - <?php echo $row['answer_count']; ?>
-                        </span>
+                        <!-- QUESTION -->
+                        <p class="mb-3">
+                            <?php echo $row['question']; ?>
+                        </p>
 
-                    </div>
+                        <!-- ACTION -->
+                        <div class="d-flex justify-content-end">
+                            <a href="View_question.php?qid=<?php echo $row['question_id']; ?>"
+                                onclick="handleNavigation(event, this.href)"
+                                class="btn btn-dark btn-sm rounded-pill px-3">
+                                View Answers
+                            </a>
+                        </div>
 
-                    <!-- QUESTION -->
-                    <p class="mb-3">
-                        <?php echo $row['question']; ?>
-                    </p>
-
-                    <!-- ACTION -->
-                    <div class="d-flex justify-content-end">
-                        <a href="View_question.php?qid=<?php echo $row['question_id']; ?>"
-                            class="btn btn-dark btn-sm rounded-pill px-3">
-                            View Answers
-                        </a>
                     </div>
 
                 </div>
 
-            </div>
+            <?php } ?>
 
-        <?php } ?>
+        </div>
+
+        <!-- ❌ No Result -->
+        <div id="noResult" class="text-center text-danger fs-4 mt-3" style="display:none;">
+            No matching questions found
+        </div>
 
     </div>
 
-    <!-- ❌ No Result -->
-    <div id="noResult" class="text-center text-danger fs-4 mt-3" style="display:none;">
-        No matching questions found
-    </div>
+    <script>
+        function handleNavigation(event, url) {
+            event.preventDefault();
 
-</div>
+            const loader = document.getElementById("loader-wrapper");
+            const bar = document.getElementById("progress-bar");
 
-<!-- 🔥 SEARCH SCRIPT -->
-<script>
-function searchQuestion() {
+            if (loader && bar) {
+                loader.classList.remove("d-none");
 
-    let input = document.getElementById("searchInput").value.toLowerCase();
-    let cards = document.querySelectorAll(".question-card");
-    let found = false;
+                // 🔥 RESET PROGRESS
+                bar.style.width = "0%";
 
-    cards.forEach(function(card) {
+                let progress = 0;
 
-        let text = card.innerText.toLowerCase();
+                let interval = setInterval(() => {
+                    progress += 25;
+                    bar.style.width = progress + "%";
 
-        if (text.includes(input)) {
-            card.style.display = "";
-            found = true;
-        } else {
-            card.style.display = "none";
+                    if (progress >= 90) {
+                        clearInterval(interval);
+                    }
+                }, 120);
+            }
+
+            // delay for loader visibility
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
         }
+    </script>
 
-    });
+    <script>
+        function searchQuestion() {
 
-    document.getElementById("noResult").style.display = found ? "none" : "block";
-}
-</script>
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let cards = document.querySelectorAll(".question-card");
+            let found = false;
+
+            cards.forEach(function(card) {
+
+                let text = card.innerText.toLowerCase();
+
+                if (text.includes(input)) {
+                    card.style.display = "";
+                    found = true;
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+            document.getElementById("noResult").style.display = found ? "none" : "block";
+        }
+    </script>
 
 </body>
+
 </html>

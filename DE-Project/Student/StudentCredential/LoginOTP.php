@@ -82,11 +82,6 @@
                 <h2 class="fw-bold mb-3">OTP Verification</h2>
                 <p class="text-muted mb-4">Enter the 6-digit code sent to your email</p>
 
-                <!--===============OTP show by session variable from login.php [remove when email functionalti implement]===============-->
-                <div class="alert alert-info py-2">
-                    OTP: <?php echo $_SESSION['otp']; ?>
-                </div>
-
                 <!--===============show error message===============-->
                 <?php
                 if ($error != "") {

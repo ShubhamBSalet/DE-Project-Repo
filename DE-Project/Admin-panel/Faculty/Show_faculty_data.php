@@ -32,11 +32,13 @@ $result = mysqli_query($conn, $query);
 
 <div class="container-fluid mt-4 px-4">
 
-    <!-- Heading + Add Button -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Faculty List</h2>
-        <a href="Add_faculty_data.php" class="btn btn-success">+ Add Faculty</a>
-    </div>
+            <div class="d-flex gap-2">
+                <a href="Add_faculty_data.php" class="btn btn-success">+ Add Faculty</a>
+                <a href="Add_faculty_excel.php" class="btn btn-outline-success">+ Add Faculty (.CSV)</a>
+            </div>
+        </div>
 
     <!-- 🔍 Search Input -->
     <div class="mb-3">

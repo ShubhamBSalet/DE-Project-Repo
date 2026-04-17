@@ -1,85 +1,79 @@
 <?php
-    session_start();
+session_start();
+include("../../_DBConnect.php");
 
-    //****************if faculty not logged in****************
-    if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-        // header("Location: HomePage.php");
-        header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
-        exit();
-    }
-    
-    //****************if student logged in****************
-    if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-        header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
-        exit();
-    }
+// Already logged in
+if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
+    header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
+    exit();
+}
+
+if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
+    header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
+    exit();
+}
 
 $error = "";
 
-// check form contains value
+// No OTP session
 if (!isset($_SESSION['otp'])) {
     header("Location: Login.php");
     exit();
 }
 
-// check verifyOTP session contains value or not
+// Verify OTP
 if (isset($_POST['verifyOTP'])) {
 
     $userOtp = $_POST['otp'];
 
-    // comparing user enterd OTP with server session OTP matched
     if ($userOtp == $_SESSION['otp']) {
 
-        // making new session for user login
         $_SESSION['facultyLoggedin'] = true;
 
-        // create new session variable for email which stores the email from login page 
-        $_SESSION['email'] = $_SESSION['email'];
+        $email = $_SESSION['email'];
 
-        // OTP session variable will be destroy
+        // Get faculty info (optional)
+        $query = "SELECT * FROM facultydata WHERE email='$email'";
+        $q = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($q);
+
+        $_SESSION['faculty_id'] = $row['id']; // optional
+
         unset($_SESSION['otp']);
 
-        // header("Location: HomePage.php");
         header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
         exit();
-
-    } 
-    else {
-        // make user logged in session false for not logged in
-        $_SESSION['facultyLoggedin'] = false;
+    } else {
         $error = "Invalid OTP";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Faculty - OTP Verification</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Faculty OTP Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-        <div class="card p-4 shadow" style="width:400px">
+        <div class="card p-5 shadow rounded-4 text-center">
 
-            <h4 class="text-center">Enter OTP</h4>
+            <h3>OTP Verification</h3>
+            <p class="text-muted">Enter OTP sent to email</p>
 
-            <p class="text-center text-muted">
-                OTP: <?php echo $_SESSION['otp']; ?>
-            </p>
+            <?php if ($error != "") echo "<div class='alert alert-danger'>$error</div>"; ?>
 
-            <?php
-                if ($error != "") {
-                    echo "<div class='alert alert-danger'>$error</div>";
-                }
-            ?>
+            <form method="post">
 
-            <form method="post" action="./LoginOTP.php">
-                <input type="text" name="otp" class="form-control mb-3" placeholder="Enter 6 digit OTP" required maxlength="6" pattern="[0-9]{6}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
+                <input type="text" name="otp" class="form-control mb-3 text-center" maxlength="6" required>
+
                 <button name="verifyOTP" class="btn btn-success w-100">Verify OTP</button>
+
             </form>
 
         </div>

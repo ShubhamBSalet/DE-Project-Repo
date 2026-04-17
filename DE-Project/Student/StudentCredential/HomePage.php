@@ -1,40 +1,40 @@
 <?php
-    session_start();
+session_start();
 
-    //****************if student not logged in****************
-    if (!isset($_SESSION['studentLoggedin'])) {
-        header("Location: /DE-Project/_NotLoggedIn.php");
-        exit();
-    }
+//****************if student not logged in****************
+if (!isset($_SESSION['studentLoggedin'])) {
+    header("Location: /DE-Project/_NotLoggedIn.php");
+    exit();
+}
 
-    //****************if faculty logged in****************
-    if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-        header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
-        exit();
-    }
+//****************if faculty logged in****************
+if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
+    header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
+    exit();
+}
 
-    include("../../_DBConnect.php");
+include("../../_DBConnect.php");
 
-    // get session user email from loginOTP
-    $id = $_SESSION['email'];
+// get session user email from loginOTP
+$id = $_SESSION['email'];
 
-    // fetch student data according to email
-    $query = "SELECT * FROM studentdata WHERE email='$id'";
-    $q = mysqli_query($conn, $query);
+// fetch student data according to email
+$query = "SELECT * FROM studentdata WHERE email='$id'";
+$q = mysqli_query($conn, $query);
 
-    // get row data in an array formate 
-    $row = mysqli_fetch_assoc($q);
+// get row data in an array formate 
+$row = mysqli_fetch_assoc($q);
 
-    // query for Latest 5 Events
-    $eventQuery = "SELECT * FROM eventpost ORDER BY event_datetime DESC LIMIT 5";
-    $eventResult = mysqli_query($conn, $eventQuery);
+// query for Latest 5 Events
+$eventQuery = "SELECT * FROM eventpost ORDER BY event_datetime DESC LIMIT 5";
+$eventResult = mysqli_query($conn, $eventQuery);
 
-    // quey for Top 2 Questions 
-    $questionQuery = "SELECT questionask.*, COUNT(AnswerToQuestion.answer_id) AS answer_count FROM questionask
+// quey for Top 2 Questions 
+$questionQuery = "SELECT questionask.*, COUNT(AnswerToQuestion.answer_id) AS answer_count FROM questionask
                         LEFT JOIN AnswerToQuestion ON AnswerToQuestion.question_id = questionask.question_id
                         GROUP BY questionask.question_id ORDER BY answer_count DESC LIMIT 2";
 
-    $questionResult = mysqli_query($conn, $questionQuery);
+$questionResult = mysqli_query($conn, $questionQuery);
 ?>
 
 <!DOCTYPE html>
@@ -49,6 +49,7 @@
 
 <body class="bg-light">
 
+    <?php include("../loader.php"); ?> <!-- FIRST -->
     <?php include("../_Navbar.php"); ?>
 
     <div class="container py-5">
@@ -154,8 +155,9 @@
                             Answers: <?php echo $q['answer_count']; ?>
                         </span>
 
-                        <a href="../StudentActivity/Student_Forum/View_question.php?qid=<?php echo $q['question_id']; ?>" class="btn btn-sm btn-dark rounded-pill">View</a>
-
+                        <a href="../StudentActivity/Student_Forum/View_question.php?qid=<?php echo $q['question_id']; ?>"
+                            onclick="handleNavigation(event, this.href)"
+                            class="btn btn-sm btn-dark rounded-pill">View</a>
                     </div>
 
                 </div>
@@ -165,6 +167,21 @@
         </div>
 
     </div>
+    <script>
+        function handleNavigation(event, url) {
+            event.preventDefault(); // stop instant redirect
+
+            const loader = document.getElementById("loader-wrapper");
+            if (loader) {
+                loader.classList.remove("d-none");
+            }
+
+            // small delay so loader is visible
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

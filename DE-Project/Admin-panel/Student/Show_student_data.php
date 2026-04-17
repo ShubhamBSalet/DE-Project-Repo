@@ -35,7 +35,10 @@ $result = mysqli_query($conn, $query);
         <!-- Heading + Add Button -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Student List</h2>
-            <a href="Add_student_data.php" class="btn btn-success">+ Add Student</a>
+            <div class="d-flex gap-2">
+                <a href="Add_student_data.php" class="btn btn-success">+ Add Student</a>
+                <a href="Add_student_excel.php" class="btn btn-outline-success">+ Add Student (.CSV)</a>
+            </div>
         </div>
 
         <!-- 🔍 Search Input -->

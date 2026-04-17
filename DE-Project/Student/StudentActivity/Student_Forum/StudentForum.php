@@ -1,51 +1,47 @@
 <?php
-    session_start();
-    include("../../../_DBConnect.php");
+session_start();
+include("../../../_DBConnect.php");
 
-    //************check student logged not in************
-    if (!isset($_SESSION['studentLoggedin']) || $_SESSION['studentLoggedin'] != true) {
-        header("Location: /DE-Project/_NotLoggedIn.php");
-        exit();
-    }
+//************check student logged not in************
+if (!isset($_SESSION['studentLoggedin']) || $_SESSION['studentLoggedin'] != true) {
+    header("Location: /DE-Project/_NotLoggedIn.php");
+    exit();
+}
 
-    //************get filter value from dropdown
-    $filter = $_GET['filter'] ?? "";
+//************get filter value from dropdown
+$filter = $_GET['filter'] ?? "";
 
-    //************$condition is for viewing own ask questions************
-    $condition = "";
+//************$condition is for viewing own ask questions************
+$condition = "";
 
-    //************for filter dropdown sorting************
+//************for filter dropdown sorting************
+$order = "ORDER BY questionask.question_id DESC";
+
+if ($filter == "popular_high") {
+    $order = "ORDER BY answer_count DESC";
+} elseif ($filter == "popular_low") {
+    $order = "ORDER BY answer_count ASC";
+} elseif ($filter == "new") {
     $order = "ORDER BY questionask.question_id DESC";
+} elseif ($filter == "old") {
+    $order = "ORDER BY questionask.question_id ASC";
+} elseif ($filter == "own") {
+    $enroll = $_SESSION['enrollment'];
+    $condition = "WHERE questionask.user_enrollment='$enroll'";
+}
 
-    if ($filter == "popular_high") {
-        $order = "ORDER BY answer_count DESC";
-    } 
-    elseif ($filter == "popular_low") {
-        $order = "ORDER BY answer_count ASC";
-    } 
-    elseif ($filter == "new") {
-        $order = "ORDER BY questionask.question_id DESC";
-    } 
-    elseif ($filter == "old") {
-        $order = "ORDER BY questionask.question_id ASC";
-    } 
-    elseif ($filter == "own") {
-        $enroll = $_SESSION['enrollment'];
-        $condition = "WHERE questionask.user_enrollment='$enroll'";
-    }
-
-    // fetch all column from questionask table, Fetches names from both tables, Counts how many answers each question has from the questionask table
-    // If question is asked by a student → data comes, user_enrollment matches student enrollment
-    // If question is asked by faculty → data comes, user_enrollment matches faculty email
-    // Joins answers table to get all answers of each question for Counts how many answers each question has
-    $query = "SELECT questionask.*, studentdata.name AS student_name, facultydata.name AS faculty_name,
+// fetch all column from questionask table, Fetches names from both tables, Counts how many answers each question has from the questionask table
+// If question is asked by a student → data comes, user_enrollment matches student enrollment
+// If question is asked by faculty → data comes, user_enrollment matches faculty email
+// Joins answers table to get all answers of each question for Counts how many answers each question has
+$query = "SELECT questionask.*, studentdata.name AS student_name, facultydata.name AS faculty_name,
                 COUNT(AnswerToQuestion.answer_id) AS answer_count FROM questionask 
                 LEFT JOIN studentdata ON studentdata.enrollment = questionask.user_enrollment
                 LEFT JOIN facultydata ON facultydata.email = questionask.user_enrollment
                 LEFT JOIN AnswerToQuestion ON AnswerToQuestion.question_id = questionask.question_id
                 $condition GROUP BY questionask.question_id $order";
 
-    $q = mysqli_query($conn, $query);
+$q = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +55,7 @@
 
 <body class="bg-light">
 
+    <?php include("../../loader.php"); ?>
     <?php include("../../_Navbar.php"); ?>
 
     <div class="container py-5">
@@ -70,7 +67,7 @@
             <div class="d-flex flex-wrap gap-2">
 
                 <!--============searching questions============-->
-                <input type="text" id="searchInput" class="form-control rounded-pill" placeholder="Search question..." 
+                <input type="text" id="searchInput" class="form-control rounded-pill" placeholder="Search question..."
                     oninput="searchQuestion()">
 
                 <!--============FILTER(sorting)============-->
@@ -116,17 +113,17 @@
             <?php while ($row = mysqli_fetch_assoc($q)) { ?>
 
                 <?php
-                    // check question asked by student -> student_name(studentdata.name)
-                    $isStudent = !empty($row['student_name']);
-                    
-                    // store the name of student | faculty
-                    $name = $isStudent ? $row['student_name'] : $row['faculty_name'];
-                    
-                    // store the role of student | faculty
-                    $role = $isStudent ? "Student" : "Faculty";
-                    
-                    // if student then blue(primary) | faculty green(success)
-                    $border = $isStudent ? "border-primary" : "border-success";
+                // check question asked by student -> student_name(studentdata.name)
+                $isStudent = !empty($row['student_name']);
+
+                // store the name of student | faculty
+                $name = $isStudent ? $row['student_name'] : $row['faculty_name'];
+
+                // store the role of student | faculty
+                $role = $isStudent ? "Student" : "Faculty";
+
+                // if student then blue(primary) | faculty green(success)
+                $border = $isStudent ? "border-primary" : "border-success";
                 ?>
 
                 <!--=========border according to role=========-->
@@ -139,9 +136,11 @@
                             <!--=========link for redirect Profile.php for a particluar student according to enrollment=========-->
                             <div>
                                 <a href="Profile.php?id=<?php echo urlencode($row['user_enrollment']); ?>"
+                                    onclick="handleNavigation(event, this.href)"
                                     class="fw-semibold text-decoration-none">
                                     <?php echo $name; ?>
                                 </a>
+
 
                                 <!--=========displaying user role(student | faculty)=========-->
                                 <span class="badge bg-secondary ms-2">
@@ -163,7 +162,9 @@
 
                         <!--=========link to redirect View_question.php according to questio id(qid)=========-->
                         <div class="d-flex justify-content-end">
-                            <a href="View_question.php?qid=<?php echo $row['question_id']; ?>" class="btn btn-dark btn-sm rounded-pill px-3">
+                            <a href="View_question.php?qid=<?php echo $row['question_id']; ?>"
+                                onclick="handleNavigation(event, this.href)"
+                                class="btn btn-dark btn-sm rounded-pill px-3">
                                 View Answers
                             </a>
                         </div>
@@ -183,6 +184,22 @@
 
     </div>
 
+    <script>
+        function handleNavigation(event, url) {
+            event.preventDefault(); // stop instant redirect
+
+            const loader = document.getElementById("loader-wrapper");
+            if (loader) {
+                loader.classList.remove("d-none");
+            }
+
+            // small delay so loader is visible
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+    </script>
+
     <!--========JS for searching question========-->
     <script>
         function searchQuestion() {
@@ -198,7 +215,7 @@
 
             //loop through the card
             cards.forEach(function(card) {
-                
+
                 // get full text inside the card & convert it to lowercase
                 let text = card.innerText.toLowerCase();
 
@@ -208,8 +225,7 @@
                     card.style.display = "";
                     // mark as found
                     found = true;
-                } 
-                else {
+                } else {
                     // hide card
                     card.style.display = "none";
                 }

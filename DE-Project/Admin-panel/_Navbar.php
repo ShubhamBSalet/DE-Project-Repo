@@ -21,18 +21,25 @@ if (!isset($_SESSION)) {
 
             <ul class="navbar-nav me-auto">
 
-                <li class="nav-item px-3">
+                <li class="nav-item px-5">
                     <a class="nav-link active" href="/DE-Project/Admin-panel/Admin_Credential/HomePage.php">Dashboard</a>
                 </li>
                 
-                <li class="nav-item px-3">
+                <li class="nav-item px-5">
                     <a class="nav-link active" href="/DE-Project/Admin-panel/Student/Show_student_data.php">Student Section</a>
                 </li>
                 
-                <li class="nav-item px-3">
+                <li class="nav-item px-5">
                     <a class="nav-link active" href="/DE-Project/Admin-panel/Faculty/Show_faculty_data.php">Faculty Section</a>
                 </li>
 
+                <li class="nav-item px-5">
+                    <a class="nav-link active" href="/DE-Project/Admin-panel/AdminEvent/PostEvent.php">Event Section</a>
+                </li>
+
+                <li class="nav-item px-5">
+                    <a class="nav-link active" href="/DE-Project/Admin-panel/AdminForum/AdminForum.php">Manage Forum</a>
+                </li>
 
             </ul>
 

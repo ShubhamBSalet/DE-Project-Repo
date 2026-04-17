@@ -1,52 +1,22 @@
 <?php
-    session_start();
+session_start();
 
-    //****************if student logged in****************
-    if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
-        header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
-        exit();
-    }
+// Redirect if already logged in
+if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true) {
+    header("Location: /DE-Project/Student/StudentCredential/HomePage.php");
+    exit();
+}
 
-    //****************if faculty logged in****************
-    if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
-        header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
-        exit();
-    }
+if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true) {
+    header("Location: /DE-Project/Faculty/FacultyCredential/HomePage.php");
+    exit();
+}
 
-    include("../../_DBConnect.php");
-
-    $error = "";
-
-    //*****************check form contains value*****************
-    if (isset($_POST['login'])) {
-
-        // store email from form input
-        $email = $_POST['email'];
-
-        if (!empty($email)) {
-
-            // check email already exists in database
-            $query = "SELECT * FROM studentdata WHERE email='$email'";
-            $q = mysqli_query($conn, $query);
-
-            if (mysqli_num_rows($q) > 0) {
-
-                // generate 6 digit otp
-                $otp = rand(100000, 999999);
-
-                // create session variables for other page
-                $_SESSION['otp'] = $otp;
-                $_SESSION['email'] = $email;
-
-                // redirect to login otp
-                header("Location: ./LoginOTP.php");
-                exit();
-            } 
-            else {
-                $error = "Email not found";
-            }
-        }
-    }
+$error = "";
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +29,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
+
 <body class="bg-light">
+
+    <!-- Loader -->
+    <div id="loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; justify-content:center; align-items:center;">
+        <div class="spinner-border text-primary" style="width:3rem; height:3rem;"></div>
+    </div>
 
     <div class="container d-flex align-items-center justify-content-center min-vh-100">
 
@@ -72,21 +48,17 @@
                 </div>
 
                 <div class="col-md-6">
-
                     <div class="card-body p-5">
 
-                        <h2 class="text-center fw-bold mb-4">
-                            Student Login
-                        </h2>
+                        <h2 class="text-center fw-bold mb-4">Student Login</h2>
 
-                        <!--===============show error message===============-->
                         <?php
                         if ($error != "") {
                             echo "<div class='alert alert-danger text-center'>$error</div>";
                         }
                         ?>
 
-                        <form method="post" action="./Login.php">
+                            <form method="post" action="./LoginProcess.php" onsubmit="showLoader()">
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold">Student Email</label>
@@ -95,12 +67,11 @@
 
                             <button type="submit" name="login" class="btn btn-primary w-100 rounded-pill">Send OTP</button>
 
-                            <a href="../../index.php" class="btn btn-outline-secondary w-100 mt-3 rounded-pill">Back to Login Options </a>
+                            <a href="../../index.php" class="btn btn-outline-secondary w-100 mt-3 rounded-pill">Back</a>
 
                         </form>
 
                     </div>
-
                 </div>
 
             </div>
@@ -109,7 +80,11 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
+        }
+    </script>
 
 </body>
 

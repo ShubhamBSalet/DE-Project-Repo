@@ -42,6 +42,13 @@
                     <a class="nav-link active px-3" href="/DE-Project/Student/StudentActivity/StudentEvent/showEvent.php">Events</a>
                 </li>
 
+                <li class="nav-item mx-3">
+                    <a class="nav-link active px-3"
+                       href="/DE-Project/Student/StudentActivity/StudentAttendance/index.php">
+                        Attendance
+                    </a>
+                </li>
+
             </ul>
 
             <!--===============RIGHT SIDE (Search + Logout grouped)===============-->

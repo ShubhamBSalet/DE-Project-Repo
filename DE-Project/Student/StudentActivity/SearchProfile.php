@@ -18,6 +18,7 @@
 </head>
 
 <body class="bg-light">
+    <?php include("../loader.php"); ?>
 
     <?php include("../_Navbar.php"); ?>
 

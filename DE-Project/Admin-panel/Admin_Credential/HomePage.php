@@ -48,17 +48,16 @@ $row = mysqli_fetch_assoc($q);
                     <div class="card-body text-center">
 
                         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="120" class="mb-3">
-                        <h4><?php echo $row['name']; ?></h4>
-                        <hr>
+                        <h4><?php echo htmlspecialchars($row['name']); ?></h4>
 
                         <p>
                             <b>Email:</b>
-                            <?php echo $row['email']; ?>
+                            <?php echo htmlspecialchars($row['email']); ?>
                         </p>
 
                         <p>
                             <b>Branch:</b>
-                            <?php echo $row['branch']; ?>
+                            <?php echo htmlspecialchars($row['branch']); ?>
                         </p>
 
                     </div>

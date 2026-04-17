@@ -51,6 +51,7 @@ $questionResult = mysqli_query($conn, $questionQuery);
 
 <body class="bg-light">
 
+    <?php include("../loader.php"); ?> <!-- ADD THIS -->
     <?php include("../_Navbar.php"); ?>
 
     <div class="container py-5">
@@ -124,22 +125,6 @@ $questionResult = mysqli_query($conn, $questionQuery);
                                 View / Register
                             </a>
 
-                            <!-- Edit + Delete -->
-                            <div class="d-flex gap-2">
-
-                                <a href="../FacultyActivity/FacultyEvent/editEvent.php?id=<?php echo $event['event_id']; ?>"
-                                    class="btn btn-outline-primary w-50 rounded-pill">
-                                    Edit
-                                </a>
-
-                                <a href="../FacultyActivity/FacultyEvent/deleteEvent.php?id=<?php echo $event['event_id']; ?>"
-                                    class="btn btn-outline-danger w-50 rounded-pill"
-                                    onclick="return confirm('Do you want to delete this event?');">
-                                    Delete
-                                </a>
-
-                            </div>
-
                         </div>
 
                     </div>
@@ -174,6 +159,7 @@ $questionResult = mysqli_query($conn, $questionQuery);
                         </span>
 
                         <a href="../FacultyActivity/Faculty_Forum/View_question.php?qid=<?php echo $q['question_id']; ?>"
+                            onclick="handleNavigation(event, this.href)"
                             class="btn btn-sm btn-dark rounded-pill">
                             View
                         </a>
@@ -189,7 +175,25 @@ $questionResult = mysqli_query($conn, $questionQuery);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function handleNavigation(event, url) {
+            event.preventDefault();
 
+            const loader = document.getElementById("loader-wrapper");
+
+            if (loader) {
+                loader.classList.remove("d-none");
+
+                // reset progress (optional but better UX)
+                let bar = document.getElementById("progress-bar");
+                if (bar) bar.style.width = "0%";
+            }
+
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+    </script>
 </body>
 
 </html>

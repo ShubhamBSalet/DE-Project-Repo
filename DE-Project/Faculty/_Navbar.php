@@ -36,24 +36,31 @@ if (isset($_SESSION['studentLoggedin']) && $_SESSION['studentLoggedin'] == true)
             <!-- LEFT MENU -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item mx-5">
+                <li class="nav-item mx-3">
                     <a class="nav-link active px-3"
                        href="/DE-Project/Faculty/FacultyCredential/HomePage.php">
                         Dashboard
                     </a>
                 </li>
 
-                <li class="nav-item mx-5">
+                <li class="nav-item mx-3">
                     <a class="nav-link active px-3"
                        href="/DE-Project/Faculty/FacultyActivity/Faculty_Forum/FacultyForum.php">
                         Forum
                     </a>
                 </li>
 
-                <li class="nav-item mx-5">
+                <li class="nav-item mx-3">
                     <a class="nav-link active px-3"
                        href="/DE-Project/Faculty/FacultyActivity/FacultyEvent/PostEvent.php">
                         Post Event
+                    </a>
+                </li>
+                
+                <li class="nav-item mx-3">
+                    <a class="nav-link active px-3"
+                       href="/DE-Project/Faculty/FacultyActivity/FacultyAttendance/index.php">
+                        Attendance
                     </a>
                 </li>
 
