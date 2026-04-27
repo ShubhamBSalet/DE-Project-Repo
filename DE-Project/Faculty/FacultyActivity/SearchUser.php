@@ -4,12 +4,32 @@ include("../../_DBConnect.php");
 
 // Get search input
 $search = $_GET['search'] ?? "";
-
-// ✅ Fix SQL error (handles sam')
+$search = trim($search);
 $search = mysqli_real_escape_string($conn, $search);
 
-// ✅ Clean input
-$search = trim($search);
+// ✅ Always define variables
+$r1 = false;
+$r2 = false;
+
+// Run query only if search is not empty
+if (!empty($search)) {
+
+    // Students
+    $sql1 = "SELECT * FROM studentdata 
+             WHERE enrollment LIKE '%$search%' 
+             OR name LIKE '%$search%' 
+             OR email LIKE '%$search%'";
+
+    $r1 = mysqli_query($conn, $sql1);
+
+    // Faculty
+    $sql2 = "SELECT * FROM facultydata 
+             WHERE name LIKE '%$search%' 
+             OR email LIKE '%$search%' 
+             OR mobile LIKE '%$search%'";
+
+    $r2 = mysqli_query($conn, $sql2);
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,146 +37,161 @@ $search = trim($search);
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Result</title>
 
-    <!-- Bootstrap 5.3 -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
 <?php include("../_Navbar.php"); ?>
 
 <div class="container py-5">
 
-    <!-- Title -->
-    <div class="mb-4">
-        <h3 class="fw-bold">Search Results</h3>
+    <!-- HEADER -->
+    <div class="card shadow border-0 rounded-4 p-4 mb-4">
+
+        <h4 class="fw-bold mb-1">
+            <i class="bi bi-search me-2"></i> Search Results
+        </h4>
+
         <p class="text-muted mb-0">
             Showing results for "<b><?php echo htmlspecialchars($search); ?></b>"
         </p>
+
     </div>
 
-    <hr>
+    <!-- EMPTY SEARCH -->
+    <?php if (empty($search)) { ?>
+        <div class="alert alert-warning text-center rounded-4 shadow-sm">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Please enter something to search.
+        </div>
+    <?php } ?>
 
-    <?php
-    // 🚫 Empty search check
-    if (empty($search)) {
-        echo "<div class='alert alert-warning'>Please enter something to search.</div>";
-        exit();
-    }
+    <!-- STUDENTS -->
+    <div class="card shadow border-0 rounded-4 p-3 mb-4">
 
-    /* ===== search student ===== */
-    $sql1 = "SELECT * FROM studentdata 
-    WHERE enrollment LIKE '%$search%' 
-    OR name LIKE '%$search%' 
-    OR email LIKE '%$search%'";
+        <h5 class="fw-semibold mb-3">
+            <i class="bi bi-mortarboard me-2"></i> Students
+        </h5>
 
-    $r1 = mysqli_query($conn, $sql1);
+        <div class="row g-3">
 
-    /* ===== search faculty ===== */
-    $sql2 = "SELECT * FROM facultydata 
-    WHERE name LIKE '%$search%' 
-    OR email LIKE '%$search%' 
-    OR mobile LIKE '%$search%'";
+            <?php if ($r1 && mysqli_num_rows($r1) > 0) { ?>
 
-    $r2 = mysqli_query($conn, $sql2);
-    ?>
+                <?php while ($row = mysqli_fetch_assoc($r1)) { ?>
 
-    <!-- ================= STUDENTS ================= -->
-    <h4 class="mt-4 mb-3 fw-semibold">Students</h4>
+                    <div class="col-md-6 col-lg-4">
 
-    <div class="row g-3">
+                        <div class="card shadow-sm border-0 rounded-4 h-100">
 
-        <?php if ($r1 && mysqli_num_rows($r1) > 0) { ?>
+                            <div class="card-body d-flex align-items-center gap-3">
 
-            <?php while ($row = mysqli_fetch_assoc($r1)) { ?>
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                     width="50"
+                                     class="rounded-circle">
 
-                <div class="col-12 col-md-6 col-lg-4">
+                                <div>
 
-                    <div class="card shadow-sm border-0 rounded-4 h-100">
+                                    <a class="fw-semibold text-dark text-decoration-none"
+                                       href="SearchProfile.php?id=<?php echo $row['enrollment']; ?>&type=student">
 
-                        <div class="card-body">
+                                        <?php echo htmlspecialchars($row['name']); ?>
 
-                            <h5 class="fw-semibold mb-2">
-                                <a class="text-decoration-none"
-                                   href="SearchProfile.php?id=<?php echo $row['enrollment']; ?>&type=student">
+                                    </a>
 
-                                    <?php echo htmlspecialchars($row['name']); ?>
+                                    <div class="text-muted small">
+                                        <?php echo htmlspecialchars($row['email']); ?>
+                                    </div>
 
-                                </a>
-                            </h5>
+                                </div>
 
-                            <p class="text-muted mb-0">
-                                <?php echo htmlspecialchars($row['email']); ?>
-                            </p>
+                            </div>
 
                         </div>
 
                     </div>
 
+                <?php } ?>
+
+            <?php } else { ?>
+
+                <div class="text-muted text-center py-3">
+                    No students found
                 </div>
 
             <?php } ?>
 
-        <?php } else { ?>
-
-            <p class="text-muted">No students found</p>
-
-        <?php } ?>
+        </div>
 
     </div>
 
-    <!-- ================= FACULTY ================= -->
-    <h4 class="mt-5 mb-3 fw-semibold">Faculty</h4>
+    <!-- FACULTY -->
+    <div class="card shadow border-0 rounded-4 p-3">
 
-    <div class="row g-3">
+        <h5 class="fw-semibold mb-3">
+            <i class="bi bi-person-badge me-2"></i> Faculty
+        </h5>
 
-        <?php if ($r2 && mysqli_num_rows($r2) > 0) { ?>
+        <div class="row g-3">
 
-            <?php while ($row = mysqli_fetch_assoc($r2)) { ?>
+            <?php if ($r2 && mysqli_num_rows($r2) > 0) { ?>
 
-                <div class="col-12 col-md-6 col-lg-4">
+                <?php while ($row = mysqli_fetch_assoc($r2)) { ?>
 
-                    <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="col-md-6 col-lg-4">
 
-                        <div class="card-body">
+                        <div class="card shadow-sm border-0 rounded-4 h-100">
 
-                            <h5 class="fw-semibold mb-2">
-                                <a class="text-decoration-none"
-                                   href="SearchProfile.php?id=<?php echo $row['email']; ?>&type=faculty">
+                            <div class="card-body d-flex align-items-center gap-3">
 
-                                    <?php echo htmlspecialchars($row['name']); ?>
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                     width="50"
+                                     class="rounded-circle">
 
-                                </a>
-                            </h5>
+                                <div>
 
-                            <p class="text-muted mb-0">
-                                <?php echo htmlspecialchars($row['email']); ?>
-                            </p>
+                                    <a class="fw-semibold text-dark text-decoration-none"
+                                       href="SearchProfile.php?id=<?php echo $row['email']; ?>&type=faculty">
+
+                                        <?php echo htmlspecialchars($row['name']); ?>
+
+                                    </a>
+
+                                    <div class="text-muted small">
+                                        <?php echo htmlspecialchars($row['email']); ?>
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
                     </div>
 
+                <?php } ?>
+
+            <?php } else { ?>
+
+                <div class="text-muted text-center py-3">
+                    No faculty found
                 </div>
 
             <?php } ?>
 
-        <?php } else { ?>
-
-            <p class="text-muted">No faculty found</p>
-
-        <?php } ?>
+        </div>
 
     </div>
 
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

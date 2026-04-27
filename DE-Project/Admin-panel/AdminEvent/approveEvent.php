@@ -9,7 +9,7 @@ if (!isset($_SESSION['AdminLoggedin'])) {
 
 $id = intval($_GET['id']);
 
-mysqli_query($conn, "DELETE FROM eventpost WHERE event_id='$id'");
+mysqli_query($conn, "UPDATE eventpost SET status='approved' WHERE event_id='$id'");
 
 header("Location: PostEvent.php");
 ?>

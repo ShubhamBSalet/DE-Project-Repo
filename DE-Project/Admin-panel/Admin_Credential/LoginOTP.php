@@ -41,24 +41,60 @@ if (isset($_POST['verifyOTP'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-        <div class="card p-4 shadow" style="width:400px">
+    <div class="col-md-5 col-lg-4">
 
-            <h4 class="text-center">Enter OTP</h4>
+        <div class="card shadow border-0 rounded-4 p-4">
 
-            <?php if ($error != "") echo "<div class='alert alert-danger'>$error</div>"; ?>
+            <!-- HEADER -->
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">🔐 OTP Verification</h3>
+                <p class="text-muted mb-0">
+                    Enter the 6-digit code sent to your email
+                </p>
+            </div>
 
+            <!-- ERROR -->
+            <?php if ($error != "") { ?>
+                <div class="alert alert-danger text-center rounded-3 py-2">
+                    <?php echo $error; ?>
+                </div>
+            <?php } ?>
+
+            <!-- FORM -->
             <form method="post">
-                <input type="text" name="otp" class="form-control mb-3 text-center" maxlength="6" required>
-                <button name="verifyOTP" class="btn btn-dark w-100">Verify OTP</button>
+
+                <div class="mb-4">
+
+                    <input type="text"
+                           name="otp"
+                           class="form-control form-control-lg text-center rounded-pill"
+                           placeholder="Enter OTP"
+                           maxlength="6"
+                           pattern="[0-9]{6}"
+                           inputmode="numeric"
+                           required
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
+
+                </div>
+
+                <button name="verifyOTP"
+                        class="btn btn-dark w-100 rounded-pill py-2">
+                    Verify OTP
+                </button>
+
             </form>
 
         </div>
 
     </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

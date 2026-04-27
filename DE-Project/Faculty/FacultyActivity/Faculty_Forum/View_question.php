@@ -9,7 +9,7 @@ if (!isset($_SESSION['facultyLoggedin']) || $_SESSION['facultyLoggedin'] !== tru
 }
 
 /* ================= GET USER ================= */
-$user = $_SESSION['email']; // faculty only
+$user = $_SESSION['email'];
 
 /* ================= GET QID ================= */
 if (!isset($_GET['qid'])) {
@@ -35,6 +35,15 @@ if (isset($_POST['rateAnswer'])) {
     $answer_id = $_POST['answer_id'];
     $rating = $_POST['rating'];
 
+    // ✅ Convert rating to label
+    if ($rating == 3) {
+        $label = "Very Good";
+    } elseif ($rating == 2) {
+        $label = "Good";
+    } else {
+        $label = "Poor";
+    }
+
     $check = mysqli_query($conn,
         "SELECT * FROM answer_rating 
          WHERE answer_id='$answer_id' 
@@ -44,15 +53,15 @@ if (isset($_POST['rateAnswer'])) {
 
         mysqli_query($conn,
             "UPDATE answer_rating 
-             SET rating='$rating' 
+             SET rating='$rating', rating_label='$label'
              WHERE answer_id='$answer_id' 
              AND user_enrollment='$user'");
 
     } else {
 
         mysqli_query($conn,
-            "INSERT INTO answer_rating (answer_id,user_enrollment,rating)
-             VALUES ('$answer_id','$user','$rating')");
+            "INSERT INTO answer_rating (answer_id,user_enrollment,rating,rating_label)
+             VALUES ('$answer_id','$user','$rating','$label')");
     }
 }
 
@@ -103,122 +112,154 @@ $a = mysqli_query($conn,
     <meta charset="UTF-8">
     <title>View Question</title>
 
-    <!-- Bootstrap 5.3 -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
 <?php include("../../_Navbar.php"); ?>
 
 <div class="container py-5">
 
-    <!-- QUESTION -->
-    <div class="card shadow-sm rounded-4 mb-4">
-        <div class="card-body">
-            <h4 class="fw-bold"><?php echo $row['question']; ?></h4>
-        </div>
+    <!-- ================= QUESTION ================= -->
+    <div class="card shadow border-0 rounded-4 mb-4 p-4">
+
+        <h4 class="fw-bold mb-2">
+            <i class="bi bi-question-circle me-2"></i>
+            <?php echo $row['question']; ?>
+        </h4>
+
     </div>
 
-    <!-- ANSWER FORM -->
-    <div class="card shadow-sm rounded-4 mb-4">
+
+    <!-- ================= ANSWER BOX ================= -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+
         <div class="card-body">
 
-            <h5 class="mb-3">Write Your Answer</h5>
+            <h5 class="mb-3">
+                <i class="bi bi-pencil-square me-2"></i> Write Your Answer
+            </h5>
 
             <form method="post">
 
-                <textarea name="answer"
-                    class="form-control mb-3"
-                    rows="4"
-                    placeholder="Write your answer..."
-                    required></textarea>
+                <div class="form-floating mb-3">
+                    <textarea name="answer"
+                              class="form-control"
+                              placeholder="Answer"
+                              id="answerBox"
+                              style="height:120px"
+                              required></textarea>
 
-                <button name="postAnswer" class="btn btn-success">
-                    Post Answer
-                </button>
+                    <label for="answerBox">Write your answer...</label>
+                </div>
 
-                <a href="./FacultyForum.php" class="btn btn-dark ms-2">
-                    Back
-                </a>
+                <div class="d-flex gap-2">
+
+                    <button name="postAnswer"
+                            class="btn btn-success rounded-pill px-4">
+                        <i class="bi bi-send me-1"></i> Post
+                    </button>
+
+                    <a href="./FacultyForum.php"
+                       class="btn btn-outline-dark rounded-pill px-4">
+                        Back
+                    </a>
+
+                </div>
 
             </form>
 
         </div>
+
     </div>
 
-    <!-- FILTER -->
-    <form method="get" class="mb-4">
 
-        <input type="hidden" name="qid" value="<?php echo $qid; ?>">
+    <!-- ================= FILTER ================= -->
+    <div class="d-flex justify-content-end mb-3">
 
-        <select name="filter"
-                class="form-select w-25"
-                onchange="this.form.submit()">
+        <form method="get">
+            <input type="hidden" name="qid" value="<?php echo $qid; ?>">
 
-            <option value="">Filter</option>
+            <select name="filter"
+                    class="form-select rounded-pill"
+                    onchange="this.form.submit()">
 
-            <option value="high" <?php if (@$_GET['filter']=="high") echo "selected"; ?>>
-                Highest Rated
-            </option>
+                <option value="">Sort Answers</option>
+                <option value="high">Highest Rated</option>
+                <option value="low">Lowest Rated</option>
+                <option value="new">Newest</option>
+                <option value="old">Oldest</option>
 
-            <option value="low" <?php if (@$_GET['filter']=="low") echo "selected"; ?>>
-                Lowest Rated
-            </option>
+            </select>
+        </form>
 
-            <option value="new" <?php if (@$_GET['filter']=="new") echo "selected"; ?>>
-                New
-            </option>
+    </div>
 
-            <option value="old" <?php if (@$_GET['filter']=="old") echo "selected"; ?>>
-                Old
-            </option>
 
-        </select>
-
-    </form>
-
-    <!-- ANSWERS -->
+    <!-- ================= ANSWERS ================= -->
 
     <?php if (mysqli_num_rows($a) == 0) { ?>
-        <div class="alert alert-info">
+        <div class="alert alert-info text-center rounded-4">
             No answers yet. Be the first to answer!
         </div>
     <?php } ?>
+
 
     <?php while ($r = mysqli_fetch_assoc($a)) { ?>
 
         <?php
         $isStudent = $r['student_name'] != NULL;
         $name = $isStudent ? $r['student_name'] : $r['faculty_name'];
-        $border = $isStudent ? "border-primary" : "border-success";
+        $badge = $isStudent ? "primary" : "success";
+
+        $avg = round($r['avg_rating']);
+        if ($avg == 3) $label = "Very Good";
+        elseif ($avg == 2) $label = "Good";
+        elseif ($avg == 1) $label = "Poor";
+        else $label = "No Rating";
         ?>
 
-        <div class="card shadow-sm rounded-4 mb-3 border-3 <?php echo $border; ?>">
+        <!-- ANSWER CARD -->
+        <div class="card shadow-sm border-0 rounded-4 mb-3">
 
             <div class="card-body">
 
-                <!-- TOP -->
+                <!-- USER + RATING -->
                 <div class="d-flex justify-content-between align-items-center mb-2">
 
-                    <h5 class="mb-0">
-                        <a href="Profile.php?id=<?php echo $r['user_enrollment']; ?>"
-                           class="text-decoration-none fw-semibold">
-                            <?php echo $name; ?>
-                        </a>
+                    <div class="d-flex align-items-center gap-2">
 
-                        <span class="badge bg-secondary ms-2">
-                            <?php echo $isStudent ? "Student" : "Faculty"; ?>
-                        </span>
-                    </h5>
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                             width="35"
+                             class="rounded-circle">
+
+                        <div>
+
+                            <a href="Profile.php?id=<?php echo $r['user_enrollment']; ?>"
+                               class="fw-semibold text-dark text-decoration-none">
+                                <?php echo $name; ?>
+                            </a>
+
+                            <span class="badge bg-<?php echo $badge; ?> ms-1">
+                                <?php echo $isStudent ? "Student" : "Faculty"; ?>
+                            </span>
+
+                        </div>
+
+                    </div>
 
                     <span class="badge bg-light text-dark">
-                        ⭐ <?php echo round($r['avg_rating'], 1); ?>
+                        ⭐ <?php echo $label; ?>
                     </span>
 
                 </div>
 
-                <!-- ANSWER -->
+                <!-- ANSWER TEXT -->
                 <p class="mb-3"><?php echo $r['answer']; ?></p>
 
                 <!-- RATING -->
@@ -228,18 +269,20 @@ $a = mysqli_query($conn,
 
                     <div class="d-flex align-items-center gap-3">
 
-                        <input type="range"
-                               name="rating"
-                               min="0"
-                               max="5"
-                               step="1"
-                               value="0"
-                               class="form-range w-50"
-                               oninput="ratingValue<?php echo $r['answer_id']; ?>.innerText = this.value">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rating" value="3" required>
+                            <label class="form-check-label">Very Good</label>
+                        </div>
 
-                        <span id="ratingValue<?php echo $r['answer_id']; ?>" class="fw-bold">
-                            0
-                        </span>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rating" value="2">
+                            <label class="form-check-label">Good</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rating" value="1">
+                            <label class="form-check-label">Poor</label>
+                        </div>
 
                         <button name="rateAnswer"
                                 class="btn btn-warning btn-sm rounded-pill">

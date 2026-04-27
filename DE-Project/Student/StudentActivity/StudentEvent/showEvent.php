@@ -22,90 +22,119 @@ if (isset($_SESSION['facultyLoggedin']) && $_SESSION['facultyLoggedin'] == true)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
-    
-    <?php include("../../loader.php"); ?>
-    <?php include("../../_Navbar.php"); ?>
+<?php include("../../loader.php"); ?>
+<?php include("../../_Navbar.php"); ?>
 
-    <div class="container py-5">
+<div class="container py-5">
 
-        <div class="mb-4">
-            <h2 class="fw-bold">Events</h2>
-            <p class="text-muted mb-0">Discover and register for campus activities</p>
+    <!-- ================= HEADER ================= -->
+    <div class="card shadow border-0 rounded-4 p-4 mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+            <div>
+                <h3 class="fw-bold mb-1">
+                    <i class="bi bi-calendar-event me-2"></i> Events
+                </h3>
+                <p class="text-muted mb-0">
+                    Discover and register for campus activities
+                </p>
+            </div>
+
+            <a href="StudentAddEvent.php"
+               class="btn btn-dark rounded-pill px-4">
+                <i class="bi bi-plus-circle me-1"></i> Add Event
+            </a>
+
         </div>
 
-        <hr>
+    </div>
 
-        <div class="row g-4">
 
-            <?php
-            //************fetch latest event post from database table************
-            $sql = "SELECT * FROM eventpost ORDER BY event_datetime DESC";
-            $result = mysqli_query($conn, $sql);
+    <!-- ================= EVENTS ================= -->
+    <div class="row g-4">
 
-            //************fetch one by one row(data) from database table in an array formate************
-            while ($row = mysqli_fetch_assoc($result)) {
+        <?php
+        $sql = "SELECT * FROM eventpost 
+                WHERE status='approved' 
+                ORDER BY event_datetime DESC";
+        $result = mysqli_query($conn, $sql);
 
-                //************Format date by converting it to string************
-                $formattedDate = date("d M Y, h:i A", strtotime($row['event_datetime']));
+        while ($row = mysqli_fetch_assoc($result)) {
 
-                //************Short description (limit to 100 chars)************
-                $shortDetails = strlen($row['event_details']) > 100
-                    ? substr($row['event_details'], 0, 100) . "..."
-                    : $row['event_details'];
-            ?>
+            $formattedDate = date("d M Y, h:i A", strtotime($row['event_datetime']));
 
-                <div class="col-12 col-md-6 col-lg-4">
+            $shortDetails = strlen($row['event_details']) > 100
+                ? substr($row['event_details'], 0, 100) . "..."
+                : $row['event_details'];
+        ?>
 
-                    <div class="card shadow-sm border-1 rounded-4 h-100">
+            <div class="col-md-6 col-lg-4">
 
-                        <div class="card-body d-flex flex-column">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
 
-                            <h5 class="fw-bold mb-2">
-                                <?php echo $row['event_name']; ?>
-                            </h5>
+                    <div class="card-body d-flex flex-column">
 
-                            <span class="badge bg-secondary mb-3">
-                                <?php echo $formattedDate; ?>
-                            </span>
+                        <!-- Title -->
+                        <h5 class="fw-bold mb-2">
+                            <?php echo $row['event_name']; ?>
+                        </h5>
 
-                            <p class="mb-2">
-                                <b class="text-muted">Place:</b> <?php echo $row['event_place']; ?>
-                            </p>
+                        <!-- Date -->
+                        <span class="badge bg-primary mb-3 align-self-start">
+                            <i class="bi bi-clock me-1"></i>
+                            <?php echo $formattedDate; ?>
+                        </span>
 
-                            <p class="mb-2">
-                                <b class="text-muted">Organize by:</b> <?php echo $row['event_organizer']; ?>
-                            </p>
+                        <!-- Info -->
+                        <p class="mb-1 small">
+                            <i class="bi bi-geo-alt me-1 text-muted"></i>
+                            <?php echo $row['event_place']; ?>
+                        </p>
 
-                            <p class="mb-3">
-                                <b class="text-muted">Description:</b> <?php echo $shortDetails; ?>
-                            </p>
+                        <p class="mb-2 small">
+                            <i class="bi bi-person me-1 text-muted"></i>
+                            <?php echo $row['event_organizer']; ?>
+                        </p>
 
-                            <div class="mt-auto">
-                                <a href="<?php echo $row['event_form_link']; ?>"
-                                    target="_blank"
-                                    class="btn btn-primary w-100 rounded-pill">
-                                    Register Now
-                                </a>
-                            </div>
+                        <!-- Description -->
+                        <p class="text-muted small mb-3">
+                            <?php echo $shortDetails; ?>
+                        </p>
 
+                        <!-- Button -->
+                        <div class="mt-auto">
+                            <a href="<?php echo $row['event_form_link']; ?>"
+                               target="_blank"
+                               class="btn btn-primary w-100 rounded-pill">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>
+                                Register Now
+                            </a>
                         </div>
 
                     </div>
 
                 </div>
 
-            <?php } ?>
+            </div>
 
-        </div>
+        <?php } ?>
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

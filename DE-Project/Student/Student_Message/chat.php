@@ -54,74 +54,117 @@
 
 <head>
     <title>Chat</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body>
-    <?php include("../_Navbar.php"); ?>
+<body class="bg-body-tertiary">
 
-    <div class="container mt-5">
+<?php include("../_Navbar.php"); ?>
 
-        <h4 class="mb-3">Chat</h4>
+<div class="container py-4">
 
-        <div class="border p-3 mb-3 rounded-4 shadow" style="height:400px; overflow-y:auto; background: linear-gradient(135deg, #6fbbde, #858fe8); color:white; scroll-behavior:smooth;">
-           
-           <?php
-                $sql = "SELECT * FROM messages WHERE (sender_id='$sender' AND sender_type='$sender_type' 
-                    AND receiver_id='$receiver' AND receiver_type='$receiver_type')
-                    OR (sender_id='$receiver' AND sender_type='$receiver_type' 
-                    AND receiver_id='$sender' AND receiver_type='$sender_type')
-                    ORDER BY created_at ASC";
+    <!-- ================= CHAT CARD ================= -->
+    <div class="card shadow border-0 rounded-4 overflow-hidden">
 
-                $result = mysqli_query($conn, $sql);
+        <!-- HEADER -->
+        <div class="bg-primary text-white p-3 d-flex align-items-center gap-3">
 
-                while ($row = mysqli_fetch_assoc($result)) {
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                 width="40"
+                 class="rounded-circle">
 
-                    $msg = decryptMessage($row['message']);
-
-                    if ($row['sender_id'] == $sender) {
-                        echo "
-                            <div class='d-flex justify-content-end mb-2'>
-                                <div class='bg-primary text-white px-3 py-2 rounded-3 shadow-sm' style='max-width:70%;'>$msg</div>
-                            </div>";
-                    } 
-                    else {
-                        echo "
-                            <div class='d-flex justify-content-start mb-2'>
-                                <div class='bg-light text-dark px-3 py-2 rounded-3 shadow-sm' style='max-width:70%;'>$msg</div>
-                            </div>";
-                    }
-                }
-            ?>
+            <div>
+                <h6 class="mb-0 fw-semibold">Chat</h6>
+                <small class="opacity-75"><?php echo ucfirst($receiver_type); ?></small>
+            </div>
 
         </div>
 
-        <!--============MESSAGE FORM============-->
-        <form method="POST">
-            <div class="input-group shadow-sm">
+        <!-- CHAT BODY -->
+        <div id="chatBox"
+             class="p-3"
+             style="height: 400px; overflow-y: auto; background: #f8f9fa;">
 
-                <input type="text"
-                    name="message"
-                    class="form-control rounded-start-pill"
-                    required
-                    placeholder="Write message...">
+            <?php
+            $sql = "SELECT * FROM messages 
+                WHERE (sender_id='$sender' AND sender_type='$sender_type' 
+                AND receiver_id='$receiver' AND receiver_type='$receiver_type')
+                OR (sender_id='$receiver' AND sender_type='$receiver_type' 
+                AND receiver_id='$sender' AND receiver_type='$sender_type')
+                ORDER BY created_at ASC";
 
-                <button type="submit"
-                    name="send"
-                    class="btn btn-primary rounded-end-pill px-4">
-                    Send
-                </button>
+            $result = mysqli_query($conn, $sql);
 
-            </div>
-        </form>
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $msg = decryptMessage($row['message']);
+
+                if ($row['sender_id'] == $sender) {
+            ?>
+
+                    <!-- SENT MESSAGE -->
+                    <div class="d-flex justify-content-end mb-2">
+                        <div class="bg-primary text-white px-3 py-2 rounded-4 shadow-sm"
+                             style="max-width: 70%;">
+                            <?php echo $msg; ?>
+                        </div>
+                    </div>
+
+                <?php } else { ?>
+
+                    <!-- RECEIVED MESSAGE -->
+                    <div class="d-flex justify-content-start mb-2">
+                        <div class="bg-white text-dark px-3 py-2 rounded-4 shadow-sm border"
+                             style="max-width: 70%;">
+                            <?php echo $msg; ?>
+                        </div>
+                    </div>
+
+                <?php } ?>
+
+            <?php } ?>
+
+        </div>
+
+        <!-- INPUT -->
+        <div class="p-3 border-top bg-white">
+
+            <form method="POST">
+
+                <div class="input-group">
+
+                    <input type="text"
+                           name="message"
+                           class="form-control rounded-pill"
+                           placeholder="Type a message..."
+                           required>
+
+                    <button type="submit"
+                            name="send"
+                            class="btn btn-primary rounded-pill ms-2 px-4">
+                        <i class="bi bi-send"></i>
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
-</body>
+</div>
 
 <script>
-    const chatBox = document.querySelector('.border');
-    chatBox.scrollTop = chatBox.scrollHeight;
+const chatBox = document.getElementById("chatBox");
+chatBox.scrollTop = chatBox.scrollHeight;
 </script>
+
+</body>
 
 </html>

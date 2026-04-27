@@ -53,6 +53,7 @@ if (isset($_POST['login'])) {
         $mail->Port = 587;
 
         $mail->setFrom('yourgmail@gmail.com', 'DE Project');    //change mail
+        $mail->addAddress($email);
 
         $mail->isHTML(true);
         $mail->Subject = 'Login OTP';

@@ -13,37 +13,52 @@
 ?>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
 
-    <div class="container">
+    <div class="container-fluid">
 
-    
-        <a class="navbar-brand fw-bold me-4" href="/DE-Project/Student/StudentCredential/HomePage.php">LinkAdemy</a>
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold"
+           href="/DE-Project/Student/StudentCredential/HomePage.php">
+            LinkAdemy
+        </a>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <!-- Toggle -->
+        <button class="navbar-toggler border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
 
-            <!--===============LEFT MENU===============-->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- LEFT MENU -->
+            <ul class="navbar-nav me-auto">
 
-                <li class="nav-item mx-5">
-                    <a class="nav-link active px-3" href="/DE-Project/Student/StudentCredential/HomePage.php">Dashboard</a>
+                <li class="nav-item px-4">
+                    <a class="nav-link active"
+                       href="/DE-Project/Student/StudentCredential/HomePage.php">
+                        Dashboard
+                    </a>
                 </li>
 
-                <li class="nav-item mx-5">
-                    <a class="nav-link active px-3" href="/DE-Project/Student/StudentActivity/Student_Forum/StudentForum.php">Forum</a>
+                <li class="nav-item px-4">
+                    <a class="nav-link active"
+                       href="/DE-Project/Student/StudentActivity/Student_Forum/StudentForum.php">
+                        Forum
+                    </a>
                 </li>
 
-                <li class="nav-item mx-5">
-                    <a class="nav-link active px-3" href="/DE-Project/Student/StudentActivity/StudentEvent/showEvent.php">Events</a>
+                <li class="nav-item px-4">
+                    <a class="nav-link active"
+                       href="/DE-Project/Student/StudentActivity/StudentEvent/showEvent.php">
+                        Events
+                    </a>
                 </li>
 
-                <li class="nav-item mx-3">
-                    <a class="nav-link active px-3"
+                <li class="nav-item px-4">
+                    <a class="nav-link active"
                        href="/DE-Project/Student/StudentActivity/StudentAttendance/index.php">
                         Attendance
                     </a>
@@ -51,17 +66,28 @@
 
             </ul>
 
-            <!--===============RIGHT SIDE (Search + Logout grouped)===============-->
+            <!-- RIGHT SIDE -->
             <div class="d-flex align-items-center gap-2">
 
-                <!--===============Search===============-->
-                <form class="d-flex" action="/DE-Project/Student/StudentActivity/SearchUser.php" method="GET">
-                    <input class="form-control rounded-pill me-2" type="search" name="search" placeholder="Search users..." required>
-                    <button class="btn btn-light rounded-pill px-3">Search</button>
+                <form class="d-flex"
+                      action="/DE-Project/Student/StudentActivity/SearchUser.php"
+                      method="GET">
+
+                    <input class="form-control me-2"
+                           type="search"
+                           name="search"
+                           placeholder="Search users..."
+                           required>
+
+                    <button class="btn btn-light px-3">
+                        Search
+                    </button>
                 </form>
 
-                <!--===============Logout===============-->
-                <a href="/DE-Project/_Logout.php" class="btn btn-danger rounded-pill px-4">Logout</a>
+                <a href="/DE-Project/_Logout.php"
+                   class="btn btn-danger px-4">
+                    Logout
+                </a>
 
             </div>
 

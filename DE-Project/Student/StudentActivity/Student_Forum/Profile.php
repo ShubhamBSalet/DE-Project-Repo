@@ -37,100 +37,103 @@
 
 <head>
     <meta charset="UTF-8">
-    <!--==========show title according to type==========-->
     <title><?php echo ($type == "student") ? "Student Profile" : "Faculty Profile"; ?></title>
 
-    <!-- Bootstrap 5.3 -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
-    <?php include("../../_Navbar.php"); ?>
+<?php include("../../_Navbar.php"); ?>
 
-    <div class="container py-5">
+<div class="container py-5">
 
-        <div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="col-lg-6 col-md-8">
 
-                <div class="card shadow-sm border-0 rounded-4">
+            <div class="card shadow border-0 rounded-4 overflow-hidden">
 
-                    <!--==========show card header colour according to type==========-->
-                    <div class="card-header text-white text-center rounded-top-4 <?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>">
+                <!-- Top Banner -->
+                <div class="<?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>" style="height: 100px;"></div>
 
-                        <!--==========show card header title according to type==========-->
-                        <h4 class="mb-0 fw-semibold">
-                            <?php echo ($type == "student") ? "Student Profile" : "Faculty Profile"; ?>
-                        </h4>
+                <!-- Profile Section -->
+                <div class="text-center px-4 pb-4">
 
-                    </div>
+                    <!-- Avatar -->
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                         class="rounded-circle shadow"
+                         width="100"
+                         style="margin-top: -50px;">
 
-                    <div class="card-body text-center p-5">
+                    <!-- Name -->
+                    <h4 class="fw-bold mt-3 mb-1"><?php echo $row['name']; ?></h4>
 
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle img-fluid w-50 mb-3">
+                    <!-- Role Badge -->
+                    <span class="badge <?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>">
+                        <?php echo ucfirst($type); ?>
+                    </span>
 
-                        <h4 class="fw-bold mb-2"><?php echo $row['name']; ?></h4>
+                </div>
 
-                        <span class="badge mb-3 
-                        <?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>">
-                            <?php echo ucfirst($type); ?>
-                        </span>
+                <!-- Info Section -->
+                <div class="px-4 pb-4">
 
-                        <hr>
+                    <div class="list-group list-group-flush">
 
-                        <div class="text-start">
+                        <?php if ($type == "student") { ?>
 
-                            <?php if ($type == "student") { ?>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-person-badge me-2"></i>Enrollment</span>
+                                <span class="fw-semibold"><?php echo $row['enrollment']; ?></span>
+                            </div>
 
-                                <p class="mb-2">
-                                    <span class="fw-semibold">Enrollment:</span>
-                                    <?php echo $row['enrollment']; ?>
-                                </p>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-envelope me-2"></i>Email</span>
+                                <span class="fw-semibold"><?php echo $row['email']; ?></span>
+                            </div>
 
-                                <p class="mb-2">
-                                    <span class="fw-semibold">Email:</span>
-                                    <?php echo $row['email']; ?>
-                                </p>
+                        <?php } ?>
 
-                            <?php } ?>
+                        <?php if ($type == "faculty") { ?>
 
-                            <?php if ($type == "faculty") { ?>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-envelope me-2"></i>Email</span>
+                                <span class="fw-semibold"><?php echo $row['email']; ?></span>
+                            </div>
 
-                                <p class="mb-2">
-                                    <span class="fw-semibold">Email:</span>
-                                    <?php echo $row['email']; ?>
-                                </p>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-briefcase me-2"></i>Post</span>
+                                <span class="fw-semibold"><?php echo $row['post']; ?></span>
+                            </div>
 
-                                <p class="mb-2">
-                                    <span class="fw-semibold">Post:</span>
-                                    <?php echo $row['post']; ?>
-                                </p>
+                        <?php } ?>
 
-                            <?php } ?>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-diagram-3 me-2"></i>Branch</span>
+                            <span class="fw-semibold"><?php echo $row['branch']; ?></span>
+                        </div>
 
-                            <p class="mb-2">
-                                <span class="fw-semibold">Branch:</span>
-                                <?php echo $row['branch']; ?>
-                            </p>
-
-                            <p class="mb-0">
-                                <span class="fw-semibold">Mobile:</span>
-                                <?php echo $row['mobile']; ?>
-                            </p>
-
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-phone me-2"></i>Mobile</span>
+                            <span class="fw-semibold"><?php echo $row['mobile']; ?></span>
                         </div>
 
                     </div>
 
-                    <div class="card-footer bg-transparent text-center border-0 pb-4">
+                </div>
 
-                        <a href="StudentForum.php"
-                            class="btn btn-outline-dark rounded-pill px-4">
-                            Back
-                        </a>
+                <!-- Footer -->
+                <div class="text-center pb-4">
 
-                    </div>
+                    <a href="StudentForum.php"
+                       class="btn btn-outline-dark rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
 
                 </div>
 
@@ -140,7 +143,9 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

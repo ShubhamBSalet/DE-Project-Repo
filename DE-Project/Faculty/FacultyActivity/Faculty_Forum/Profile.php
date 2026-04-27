@@ -36,11 +36,14 @@ if (mysqli_num_rows($q) > 0) {
     <meta charset="UTF-8">
     <title><?php echo ($type == "student") ? "Student Profile" : "Faculty Profile"; ?></title>
 
-    <!-- Bootstrap 5.3 -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-body-tertiary">
 
 <?php include("../../_Navbar.php"); ?>
 
@@ -48,91 +51,82 @@ if (mysqli_num_rows($q) > 0) {
 
     <div class="row justify-content-center">
 
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="col-lg-6 col-md-8">
 
-            <div class="card shadow-sm border-0 rounded-4">
+            <?php
+            $bg = ($type == "student") ? "bg-primary" : "bg-success";
+            ?>
 
-                <!-- HEADER -->
-                <div class="card-header text-white text-center rounded-top-4 
-                    <?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>">
+            <div class="card shadow border-0 rounded-4 overflow-hidden">
 
-                    <h4 class="mb-0 fw-semibold">
-                        <?php echo ($type == "student") ? "Student Profile" : "Faculty Profile"; ?>
-                    </h4>
+                <!-- 🔥 BANNER -->
+                <div class="<?php echo $bg; ?>" style="height: 100px;"></div>
 
-                </div>
-
-                <!-- BODY -->
-                <div class="card-body text-center p-5">
+                <!-- PROFILE CONTENT -->
+                <div class="text-center px-4 pb-4">
 
                     <!-- AVATAR -->
                     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                         class="rounded-circle img-fluid w-50 mb-3">
+                         class="rounded-circle shadow"
+                         width="100"
+                         style="margin-top:-50px;">
 
                     <!-- NAME -->
-                    <h4 class="fw-bold mb-2">
+                    <h4 class="fw-bold mt-3 mb-1">
                         <?php echo $row['name']; ?>
                     </h4>
 
-                    <!-- ROLE BADGE -->
-                    <span class="badge mb-3 
-                        <?php echo ($type == "student") ? "bg-primary" : "bg-success"; ?>">
+                    <!-- ROLE -->
+                    <span class="badge <?php echo $bg; ?>">
                         <?php echo ucfirst($type); ?>
                     </span>
 
-                    <hr>
+                </div>
 
-                    <!-- DETAILS -->
-                    <div class="text-start">
+                <!-- DETAILS -->
+                <div class="px-4 pb-4">
+
+                    <div class="list-group list-group-flush">
 
                         <?php if ($type == "student") { ?>
-
-                            <p class="mb-2">
-                                <span class="fw-semibold">Enrollment:</span>
-                                <?php echo $row['enrollment']; ?>
-                            </p>
-
-                            <p class="mb-2">
-                                <span class="fw-semibold">Email:</span>
-                                <?php echo $row['email']; ?>
-                            </p>
-
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-person-badge me-2"></i>Enrollment</span>
+                                <span class="fw-semibold"><?php echo $row['enrollment']; ?></span>
+                            </div>
                         <?php } ?>
+
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-envelope me-2"></i>Email</span>
+                            <span class="fw-semibold"><?php echo $row['email']; ?></span>
+                        </div>
 
                         <?php if ($type == "faculty") { ?>
-
-                            <p class="mb-2">
-                                <span class="fw-semibold">Email:</span>
-                                <?php echo $row['email']; ?>
-                            </p>
-
-                            <p class="mb-2">
-                                <span class="fw-semibold">Post:</span>
-                                <?php echo $row['post']; ?>
-                            </p>
-
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-briefcase me-2"></i>Post</span>
+                                <span class="fw-semibold"><?php echo $row['post']; ?></span>
+                            </div>
                         <?php } ?>
 
-                        <p class="mb-2">
-                            <span class="fw-semibold">Branch:</span>
-                            <?php echo $row['branch']; ?>
-                        </p>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-diagram-3 me-2"></i>Branch</span>
+                            <span class="fw-semibold"><?php echo $row['branch']; ?></span>
+                        </div>
 
-                        <p class="mb-0">
-                            <span class="fw-semibold">Mobile:</span>
-                            <?php echo $row['mobile']; ?>
-                        </p>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-phone me-2"></i>Mobile</span>
+                            <span class="fw-semibold"><?php echo $row['mobile']; ?></span>
+                        </div>
 
                     </div>
 
                 </div>
 
-                <!-- FOOTER -->
-                <div class="card-footer bg-transparent text-center border-0 pb-4">
+                <!-- ACTION -->
+                <div class="text-center pb-4">
 
                     <a href="./FacultyForum.php"
                        class="btn btn-outline-dark rounded-pill px-4">
-                        Back
+                        <i class="bi bi-arrow-left me-1"></i> Back
                     </a>
 
                 </div>
